@@ -19,7 +19,7 @@ def get_books_list():
 
 @application.route('/books/<int:id>', methods=['GET'])
 def get_book(id):
-    book = ((book for book in books if book['id'] == id), None)
+    book = next((book for book in books if book['id'] == id), None)
     if book is None:
         return jsonify({'error': 'Book not found. If you want to add a book, use /book-add'}), 404
     return jsonify(book)
@@ -30,10 +30,27 @@ def get_authors():
 
 @application.route('/book-add', methods=['POST'])
 def add_book():
-    new_book = request.json
-    new_book['id'] = len(books) + 1
-    books.append(new_book)
-    return jsonify(new_book), 201
+    try:
+        new_book = request.json
+        if isinstance(new_book, list):
+            new_book = new_book[0]
+        new_book['id'] = len(books) + 1
+        books.append(new_book)
+        return jsonify(new_book), 201
+    except Exception as exception:
+        return jsonify({'error': str(exception)}), 500
+
+@application.route('/author-add', methods=['POST'])
+def add_author():
+    try:
+        new_author = request.json
+        if isinstance(new_author, list):
+            new_author = new_author[0]
+        new_author['id'] = len(authors) + 1
+        authors.append(new_author)
+        return jsonify(new_author), 201
+    except Exception as exception:
+        return jsonify({'error': str(exception)}), 500
 
 if __name__ == '__main__':
     application.run()
