@@ -45,7 +45,18 @@ def get_book(id):
     book = next((book for book in books if book['id'] == id), None)
     if book is None:
         return jsonify({'error': 'Book not found. If you want to add a book, use /book-add'}), 404
-    return jsonify(book)
+    
+    # find info about the author
+    author = next((author for author in authors if author['id'] == book['author_id']), None)
+
+    # compile the output with information about the book as well as the author
+    book_with_author = {
+        'id': book['id'],
+        'title': book['title'],
+        'author_id': book['author_id'],
+        'author': author['name'] if author else 'Unknown'
+    }
+    return jsonify(book_with_author)
 
 # GET a list of all authors
 @application.route('/authors', methods=['GET'])
