@@ -70,8 +70,10 @@ def get_author(id):
     if author is None:
         return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'})
     
+    # find the number of books from this author
     book_count = sum(1 for book in books if book['author_id'] == id)
     
+    # compile the output with information about the author + book count
     author_with_book_count = {
         'id': author['id'],
         'name': author['name'],
