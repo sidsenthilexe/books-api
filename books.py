@@ -1,11 +1,18 @@
+# books-api (github.com/sidsenthilexe/books-api)
+# A simple API to maintain a list of books and a list of authors
+
+# imports
 from flask import Flask, jsonify, request
 
+# init flask
 application = Flask(__name__)
 application.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
+# init the lists of books and authors
 books = []
 authors = []
 
+# Add the sample data
 authors.append({'id': 1, 'name': 'Tolkien'})
 authors.append({'id': 2, 'name': 'Asimov'})
 books.append({'id': 1, 'title': 'The Hobbit', 'author_id': 1})
@@ -13,10 +20,12 @@ books.append({'id': 2, 'title': 'I, Robot', 'author_id': 2})
 
 @application.route('/')
 
+# GET a list of all books
 @application.route('/books', methods=['GET'])
 def get_books_list():
     return jsonify(books)
 
+# GET a specific book by its id
 @application.route('/books/<int:id>', methods=['GET'])
 def get_book(id):
     book = next((book for book in books if book['id'] == id), None)
@@ -24,10 +33,20 @@ def get_book(id):
         return jsonify({'error': 'Book not found. If you want to add a book, use /book-add'}), 404
     return jsonify(book)
 
+# GET a list of all authors
 @application.route('/authors', methods=['GET'])
-def get_authors():
+def get_authors_list():
     return jsonify(authors)
 
+# GET a specific author by their id
+@application.route('/authors/<int:id>', methods=['GET'])
+def get_author(id):
+    author = next((author for author in authors if author['id'] == id), None)
+    if author is None:
+        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'})
+    return jsonify(author)
+
+# POST a new book
 @application.route('/book-add', methods=['POST'])
 def add_book():
     try:
@@ -40,6 +59,24 @@ def add_book():
     except Exception as exception:
         return jsonify({'error': str(exception)})
 
+# PUT - modify an exisiting book by its id
+@application.route('/book-modify/<int:id>', methods=['PUT'])
+def update_book(id):
+    book = next((book for book in books if book['id'] == id), None)
+    if book is None:
+        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add'}), 404
+    book_update = request.json
+    book.update(book_update)
+    return jsonify(book)
+
+# DELETE an existing book by its id
+@application.route('/book-delete/<int:id>', methods=['DELETE'])
+def delete_book(id):
+    global books
+    books = [book for book in books if book['id'] != id]
+    return jsonify({'message': f'Deleted book {id}'}), 201
+
+# POST a new author
 @application.route('/author-add', methods=['POST'])
 def add_author():
     try:
@@ -52,6 +89,22 @@ def add_author():
     except Exception as exception:
         return jsonify({'error': str(exception)})
 
+# PUT - modify an existing author by their id
+@application.route('/author-modify/<int:id>', methods=['PUT'])
+def update_author(id):
+    author = next((author for author in authors if author['id'] == id), None)
+    if author is None:
+        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'}), 404
+    author_update = request.json
+    author.update(author_update)
+    return jsonify(author)
+
+# DELETE an existing author by their id
+@application.route('/author-delete/<int:id>', methods=['DELETE'])
+def delete_author(id):
+    global authors
+    authors = [author for author in authors if author['id'] != id]
+    return jsonify({'message': f'Deleted author {id}'}), 201
 
 if __name__ == '__main__':
     application.run()
