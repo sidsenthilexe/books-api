@@ -69,7 +69,16 @@ def get_author(id):
     author = next((author for author in authors if author['id'] == id), None)
     if author is None:
         return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'})
-    return jsonify(author)
+    
+    book_count = sum(1 for book in books if book['author_id'] == id)
+    
+    author_with_book_count = {
+        'id': author['id'],
+        'name': author['name'],
+        'book_count': book_count
+    }
+
+    return jsonify(author_with_book_count)
 
 # POST a new book
 @application.route('/book-add', methods=['POST'])
