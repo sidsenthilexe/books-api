@@ -2,9 +2,11 @@
 # A simple API to maintain a list of books and a list of authors
 
 # imports
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
+import logging
 
 # init flask
+logging.basicConfig(level=logging.DEBUG)
 application = Flask(__name__)
 application.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
@@ -17,6 +19,18 @@ authors.append({'id': 1, 'name': 'Tolkien'})
 authors.append({'id': 2, 'name': 'Asimov'})
 books.append({'id': 1, 'title': 'The Hobbit', 'author_id': 1})
 books.append({'id': 2, 'title': 'I, Robot', 'author_id': 2})
+
+def validate_book_add(data):
+    logging.debug(data)
+    if 'title' not in data or not isinstance(data['title'], str):
+        abort(400, description='Title is required to be a string.')
+    if 'author_id' not in data or not isinstance(data['author_id'], int):
+        abort(400, description='Author ID is required to be an integer.')
+
+def validate_author_add(data):
+    logging.debug(data)
+    if 'name' not in data or not isinstance(data['name'], str):
+        abort(400, description='Name is required to be a string.')
 
 @application.route('/')
 
@@ -54,6 +68,7 @@ def add_book():
         if isinstance(new_book, list):
             new_book = new_book[0]
         new_book['id'] = len(books) + 1
+        validate_book_add(new_book)
         books.append(new_book)
         return jsonify(new_book), 201
     except Exception as exception:
@@ -84,6 +99,7 @@ def add_author():
         if isinstance(new_author, list):
             new_author = new_author[0]
         new_author['id'] = len(authors)+1
+        validate_author_add(new_author)
         authors.append(new_author)
         return jsonify(new_author), 201
     except Exception as exception:
@@ -107,4 +123,5 @@ def delete_author(id):
     return jsonify({'message': f'Deleted author {id}'}), 201
 
 if __name__ == '__main__':
-    application.run()
+    application.run(debug=True)
+    
