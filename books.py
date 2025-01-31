@@ -6,7 +6,6 @@ from flask import Flask, jsonify, request, abort
 import logging
 
 # init flask
-logging.basicConfig(level=logging.DEBUG)
 application = Flask(__name__)
 application.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
@@ -21,14 +20,12 @@ books.append({'id': 1, 'title': 'The Hobbit', 'author_id': 1})
 books.append({'id': 2, 'title': 'I, Robot', 'author_id': 2})
 
 def validate_book_add(data):
-    logging.debug(data)
     if 'title' not in data or not isinstance(data['title'], str):
         abort(400, description='Title is required to be a string.')
     if 'author_id' not in data or not isinstance(data['author_id'], int):
         abort(400, description='Author ID is required to be an integer.')
 
 def validate_author_add(data):
-    logging.debug(data)
     if 'name' not in data or not isinstance(data['name'], str):
         abort(400, description='Name is required to be a string.')
 
@@ -57,30 +54,6 @@ def get_book(id):
         'author': author['name'] if author else 'Unknown'
     }
     return jsonify(book_with_author)
-
-# GET a list of all authors
-@application.route('/authors', methods=['GET'])
-def get_authors_list():
-    return jsonify(authors)
-
-# GET a specific author by their id
-@application.route('/authors/<int:id>', methods=['GET'])
-def get_author(id):
-    author = next((author for author in authors if author['id'] == id), None)
-    if author is None:
-        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'})
-    
-    # find the number of books from this author
-    book_count = sum(1 for book in books if book['author_id'] == id)
-    
-    # compile the output with information about the author + book count
-    author_with_book_count = {
-        'id': author['id'],
-        'name': author['name'],
-        'book_count': book_count
-    }
-
-    return jsonify(author_with_book_count)
 
 # POST a new book
 @application.route('/book-add', methods=['POST'])
@@ -112,6 +85,30 @@ def delete_book(id):
     global books
     books = [book for book in books if book['id'] != id]
     return jsonify({'message': f'Deleted book {id}'}), 201
+
+# GET a list of all authors
+@application.route('/authors', methods=['GET'])
+def get_authors_list():
+    return jsonify(authors)
+
+# GET a specific author by their id
+@application.route('/authors/<int:id>', methods=['GET'])
+def get_author(id):
+    author = next((author for author in authors if author['id'] == id), None)
+    if author is None:
+        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'})
+    
+    # find the number of books from this author
+    book_count = sum(1 for book in books if book['author_id'] == id)
+    
+    # compile the output with information about the author + book count
+    author_with_book_count = {
+        'id': author['id'],
+        'name': author['name'],
+        'book_count': book_count
+    }
+
+    return jsonify(author_with_book_count)
 
 # POST a new author
 @application.route('/author-add', methods=['POST'])
@@ -145,5 +142,5 @@ def delete_author(id):
     return jsonify({'message': f'Deleted author {id}'}), 201
 
 if __name__ == '__main__':
-    application.run(debug=True)
+    application.run()
     
