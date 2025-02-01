@@ -3,7 +3,6 @@
 
 # imports
 from flask import Flask, jsonify, request, abort
-import logging
 
 # init flask
 application = Flask(__name__)
@@ -142,5 +141,5 @@ def delete_author(id):
     return jsonify({'message': f'Deleted author {id}'}), 201
 
 if __name__ == '__main__':
-    application.run()
+    application.run(host='localhost', port=39617)
     
