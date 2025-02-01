@@ -40,7 +40,7 @@ def get_books_list():
 def get_book(id):
     book = next((book for book in books if book['id'] == id), None)
     if book is None:
-        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add'}), 404
+        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     
     # find info about the author
     author = next((author for author in authors if author['id'] == book['author_id']), None)
@@ -74,7 +74,7 @@ def add_book():
 def update_book(id):
     book = next((book for book in books if book['id'] == id), None)
     if book is None:
-        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add'}), 404
+        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     book_update = request.json
     book.update(book_update)
     return jsonify(book)
@@ -97,7 +97,7 @@ def get_authors_list():
 def get_author(id):
     author = next((author for author in authors if author['id'] == id), None)
     if author is None:
-        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'})
+        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     
     # find the number of books from this author
     book_count = sum(1 for book in books if book['author_id'] == id)
@@ -129,7 +129,7 @@ def add_author():
 def update_author(id):
     author = next((author for author in authors if author['id'] == id), None)
     if author is None:
-        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'}), 404
+        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     author_update = request.json
     author.update(author_update)
     return jsonify(author)
