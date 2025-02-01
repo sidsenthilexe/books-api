@@ -26,7 +26,7 @@ def validate_book_add(data):
 
 def validate_author_add(data):
     if 'name' not in data or not isinstance(data['name'], str):
-        abort(400, description='Name is required to be a string.')
+        abort(400, {'description': 'Name is required to be a string.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'})
 
 @application.route('/')
 
