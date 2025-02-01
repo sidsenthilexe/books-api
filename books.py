@@ -5,7 +5,6 @@
 from waitress import serve
 from flask import Flask, jsonify, request, abort
 
-
 # init flask
 application = Flask(__name__)
 application.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
