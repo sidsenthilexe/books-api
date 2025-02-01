@@ -44,6 +44,21 @@ def validate_author_modify(data):
 
 @application.route('/')
 
+@application.route('/help', methods=['GET'])
+def help():
+    help_return = {
+        'documentation': 'github.com/sidsenthilexe/books-api/wiki',
+        '/books': 'GET - Return a list of all books in the database',
+        '/books/<id>': 'GET - Return information about the specified book - <id> is required to be an integer',
+        '/book-add': 'POST - Add a book - input information in the body as json',
+        '/book-modify/<id>': 'PUT - Modify a book - input information in the body as json - <id> is required to be an integer',
+        '/authors': 'GET - Return a list of all authors in the database',
+        '/authors/<id>': 'GET - Return information about the specified author - <id> is required to be an integer',
+        '/author-add': 'POST - Add a book - input information in the body as json',
+        '/author-modify/<id>': 'PUT - Modify an author - input information in the body as json - <id> is required to be an integer'
+    }
+    return jsonify(help_return)
+
 # GET a list of all books
 @application.route('/books', methods=['GET'])
 def get_books_list():
@@ -54,7 +69,7 @@ def get_books_list():
 def get_book(id):
     book = next((book for book in books if book['id'] == id), None)
     if book is None:
-        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
+        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add.', 'help': 'books.sidsenthil.hackclub.app/help', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     
     # find info about the author
     author = next((author for author in authors if author['id'] == book['author_id']), None)
@@ -88,7 +103,7 @@ def add_book():
 def update_book(id):
     book = next((book for book in books if book['id'] == id), None)
     if book is None:
-        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
+        return jsonify({'error': 'Book not found. If you want to add a book, use /book-add.', 'help': 'books.sidsenthil.hackclub.app/help', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     book_update = request.json
     validate_book_modify(book_update)
     book.update(book_update)
@@ -112,7 +127,7 @@ def get_authors_list():
 def get_author(id):
     author = next((author for author in authors if author['id'] == id), None)
     if author is None:
-        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
+        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add.', 'help': 'books.sidsenthil.hackclub.app/help', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     
     # find the number of books from this author
     book_count = sum(1 for book in books if book['author_id'] == id)
@@ -144,7 +159,7 @@ def add_author():
 def update_author(id):
     author = next((author for author in authors if author['id'] == id), None)
     if author is None:
-        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
+        return jsonify({'error': 'Author not found. If you want to add an author, use /author-add.', 'help': 'books.sidsenthil.hackclub.app/help', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     author_update = request.json
     validate_author_modify(author_update)
     author.update(author_update)
