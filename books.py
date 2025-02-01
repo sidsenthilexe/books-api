@@ -20,13 +20,13 @@ books.append({'id': 2, 'title': 'I, Robot', 'author_id': 2})
 
 def validate_book_add(data):
     if 'title' not in data or not isinstance(data['title'], str):
-        abort(400, description='Title is required to be a string.')
+        abort(400, description='Title is required to be a string. github.com/sidsenthilexe/books-api/wiki')
     if 'author_id' not in data or not isinstance(data['author_id'], int):
-        abort(400, description='Author ID is required to be an integer.')
+        abort(400, description='Author ID is required to be an integer. github.com/sidsenthilexe/books-api/wiki')
 
 def validate_author_add(data):
     if 'name' not in data or not isinstance(data['name'], str):
-        abort(400, {'description': 'Name is required to be a string.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'})
+        abort(400, 'Name is required to be a string. github.com/sidsenthilexe/books-api/wiki')
 
 @application.route('/')
 
