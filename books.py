@@ -7,7 +7,6 @@ from flask import Flask, jsonify, request, abort
 # init flask
 application = Flask(__name__)
 application.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-serve(application, listen='*:39617')
 # init the lists of books and authors
 books = []
 authors = []
