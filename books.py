@@ -4,7 +4,6 @@
 # imports
 from flask import Flask, jsonify, request, abort
 import json
-import os
 
 # init flask
 application = Flask(__name__)
@@ -29,18 +28,12 @@ def validate_author_add(data):
     if 'name' not in data or not isinstance(data['name'], str):
         abort(400, description='Name is required to be a string.')
 
-def write_to_json(filename, data):
-    os.remove(filename)
-    with open(str(filename), 'w') as file:
-        json.dump(data, file)
-
 @application.route('/')
 
 # GET a list of all books
 @application.route('/books', methods=['GET'])
 def get_books_list():
     return jsonify(books)
-    write_to_json('books.json', books)
 
 # GET a specific book by its id
 @application.route('/books/<int:id>', methods=['GET'])
@@ -59,7 +52,6 @@ def get_book(id):
         'author_id': book['author_id'],
         'author': author['name'] if author else 'Unknown'
     }
-    write_to_json('books.json', books)
     return jsonify(book_with_author)
     
 
@@ -73,10 +65,8 @@ def add_book():
         new_book['id'] = len(books) + 1
         validate_book_add(new_book)
         books.append(new_book)
-        write_to_json('books.json', books)
         return jsonify(new_book), 201
     except Exception as exception:
-        write_to_json('books.json', books)
         return jsonify({'error': str(exception)})
 
 # PUT - modify an exisiting book by its id
@@ -87,7 +77,6 @@ def update_book(id):
         return jsonify({'error': 'Book not found. If you want to add a book, use /book-add'}), 404
     book_update = request.json
     book.update(book_update)
-    write_to_json('books.json', books)
     return jsonify(book)
     
 
@@ -96,13 +85,11 @@ def update_book(id):
 def delete_book(id):
     global books
     books = [book for book in books if book['id'] != id]
-    write_to_json('books.json', books)
     return jsonify({'message': f'Deleted book {id}'}), 201
 
 # GET a list of all authors
 @application.route('/authors', methods=['GET'])
 def get_authors_list():
-    write_to_json('authors.json', authors)
     return jsonify(authors)
 
 # GET a specific author by their id
@@ -110,7 +97,6 @@ def get_authors_list():
 def get_author(id):
     author = next((author for author in authors if author['id'] == id), None)
     if author is None:
-        write_to_json('authors.json', authors)
         return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'})
     
     # find the number of books from this author
@@ -122,7 +108,6 @@ def get_author(id):
         'name': author['name'],
         'book_count': book_count
     }
-    write_to_json('authors.json', authors)
     return jsonify(author_with_book_count)
 
 # POST a new author
@@ -135,10 +120,8 @@ def add_author():
         new_author['id'] = len(authors)+1
         validate_author_add(new_author)
         authors.append(new_author)
-        write_to_json('authors.json', authors)
         return jsonify(new_author), 201
     except Exception as exception:
-        write_to_json('authors.json', authors)
         return jsonify({'error': str(exception)})
 
 # PUT - modify an existing author by their id
@@ -149,7 +132,6 @@ def update_author(id):
         return jsonify({'error': 'Author not found. If you want to add an author, use /author-add'}), 404
     author_update = request.json
     author.update(author_update)
-    write_to_json('authors.json', authors)
     return jsonify(author)
 
 # DELETE an existing author by their id
@@ -157,7 +139,6 @@ def update_author(id):
 def delete_author(id):
     global authors
     authors = [author for author in authors if author['id'] != id]
-    write_to_json('authors.json', authors)
     return jsonify({'message': f'Deleted author {id}'}), 201
 
 if __name__ == '__main__':
