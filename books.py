@@ -84,6 +84,7 @@ def update_book(id):
     if book is None:
         return jsonify({'error': 'Book not found. If you want to add a book, use /book-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     book_update = request.json
+    validate_book_modify(book_update)
     book.update(book_update)
     return jsonify(book)
     
