@@ -140,5 +140,5 @@ def delete_author(id):
     return jsonify({'message': f'Deleted author {id}'}), 201
 
 if __name__ == '__main__':
-    application.run(host='localhost', port=39617)
+    application.run(debug=True, host='localhost', port=39617)
     
