@@ -146,6 +146,7 @@ def update_author(id):
     if author is None:
         return jsonify({'error': 'Author not found. If you want to add an author, use /author-add.', 'documentation': 'github.com/sidsenthilexe/books-api/wiki'}), 404
     author_update = request.json
+    vaildate_author_modify(author_update)
     author.update(author_update)
     return jsonify(author)
 
