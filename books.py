@@ -24,6 +24,14 @@ def validate_book_add(data):
     if 'author_id' not in data or not isinstance(data['author_id'], int):
         abort(400, description='Author ID is required to be an integer. github.com/sidsenthilexe/books-api/wiki')
 
+def validate_book_modify(data):
+    if 'title' not in data or not isinstance(data['title'], str):
+        abort(400, description='Title is required to be a string. github.com/sidsenthilexe/books-api/wiki')
+    if 'id' not in data or not isinstance(data['id'], int):
+        abort(400, description='ID is required to be an integer. github.com/sidsenthilexe/books-api/wiki')
+    if 'author_id' not in data or not isinstance(data['author_id'], int):
+        abort(400, description='Author ID is required to be an integer. github.com/sidsenthilexe/books-api/wiki')
+
 def validate_author_add(data):
     if 'name' not in data or not isinstance(data['name'], str):
         abort(400, 'Name is required to be a string. github.com/sidsenthilexe/books-api/wiki')
