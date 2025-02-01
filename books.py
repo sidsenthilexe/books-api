@@ -2,7 +2,6 @@
 # A simple API to maintain a list of books and a list of authors
 
 # imports
-from waitress import serve
 from flask import Flask, jsonify, request, abort
 
 # init flask
